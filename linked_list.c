@@ -26,11 +26,20 @@ int main()
     tail.node = NULL;
 
     // Iterate through linked list
+    printf("Linked list with three nodes:\n");
     linked_list *node = &head;
     while (node) {
       printf("Current Node's int = %d\n", node->number);
       node = node->node;
     }
 
+    //Remove middle node of list
+    printf("Linked list without middle node:\n");
+    head.node = &tail;
+    node = &head;
+    while (node) {
+      printf("Current Node's int = %d\n", node->number);
+      node = node->node;
+    }
     return 0;
 }
