@@ -1,5 +1,5 @@
 /*
- * Linked list Operations
+ * Singly Linked List Operations
  * By: Liam P. Walsh
 */
 
