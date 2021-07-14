@@ -113,7 +113,6 @@ int empty_list(linked_list * list) {
 	}
 	// Empties list by setting to NULL.
 	list->head = NULL;
-	list = NULL;
 	return 1;
 }
 
