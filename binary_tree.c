@@ -110,6 +110,26 @@ int empty_list(tree * list) {
 }
 
 // Parses tree for largest and smallest nodes
+int search_tree(tree * list, tree_node * key) {
+	if (!list || !list->root) {
+		return 0;
+	}
+  tree_node * iter = list->root;
+  while (iter) {
+    if (iter == key) {
+      return 1;
+    }
+    if (iter->number > key->number) {
+      iter = iter->left;
+    }
+    else {
+      iter = iter->right;
+    }
+  }
+  return 0;
+}
+
+// Parses tree for largest and smallest nodes
 void print_small_large_tree(tree * list) {
 	printf("Printing Tree's L/R-most nodes: \n");
 	if (!list || !list->root) {
@@ -182,7 +202,8 @@ int main()
 		printf("Append failed.\n");
 	}
   print_tree(list);
-	if (!append_node(create_node(3), list)) {
+  tree_node * node = create_node(5);
+	if (!append_node(node, list)) {
 		printf("Append failed.\n");
 	}
   print_tree(list);
@@ -191,6 +212,12 @@ int main()
 	}
   print_tree(list);
   print_small_large_tree(list);
+  if (search_tree(list, node)) {
+    printf("Found node in tree.\n");
+  }
+  else {
+    printf("Didn't find node in tree.\n");
+  }
 
 	printf("Deleting Tree:\n");
 	if (!empty_list(list)) {
