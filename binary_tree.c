@@ -109,21 +109,45 @@ int empty_list(tree * list) {
 	return 1;
 }
 
+// Parses tree for largest and smallest nodes
+void print_small_large_tree(tree * list) {
+	printf("Printing Tree's L/R-most nodes: \n");
+	if (!list || !list->root) {
+		printf("   No tree, root empty\n");
+		return;
+	}
+	// Find smallest
+  tree_node * iter = list->root;
+	while (iter->left) {
+    iter = iter->left;
+  }
+  printf("   Left-most: %d\n", iter->number);
+  // Find largest
+  iter = list->root;
+	while (iter->right) {
+    iter = iter->right;
+  }
+  printf("   Right-most: %d\n", iter->number);
+}
+
 // Parses list and prints node data.
 void print_sub_tree(tree_node * node) {
 	if (!node) {
 		return;
 	}
-	printf(" %d: ", node->number);
+	printf("\n   %d: ", node->number);
   if (node->left) {
     printf("Left: %d ", node->left->number);
-    print_sub_tree(node->left);
   }
   if (node->right) {
     printf("Right: %d ", node->right->number);
+  }
+  if (node->left) {
+    print_sub_tree(node->left);
+  }
+  if (node->right) {
     print_sub_tree(node->right);
   }
-  printf("\n");
 }
 
 // Parses list and prints node data.
@@ -133,7 +157,7 @@ void print_tree(tree * list) {
 		printf("   No tree, root empty\n");
 		return;
 	}
-	printf("   Root Node's int = %d\n", list->root->number);
+	printf("   Root %d ", list->root->number);
 	if (list->root->left) {
     printf("Left: %d ", list->root->left->number);
     print_sub_tree(list->root->left);
@@ -142,6 +166,7 @@ void print_tree(tree * list) {
     printf("Right: %d ", list->root->right->number);
     print_sub_tree(list->root->right);
   }
+  printf("\n");
 }
 
 int main()
@@ -165,12 +190,14 @@ int main()
 		printf("Append failed.\n");
 	}
   print_tree(list);
+  print_small_large_tree(list);
 
 	printf("Deleting Tree:\n");
 	if (!empty_list(list)) {
 		printf("Empty List failed.\n");
 	}
 	print_tree(list);
+  print_small_large_tree(list);
 	free(list);
   return 0;
 }
