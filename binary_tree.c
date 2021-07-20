@@ -180,33 +180,141 @@ void print_tree(tree * list) {
 	printf("   Root %d ", list->root->number);
 	if (list->root->left) {
     printf("Left: %d ", list->root->left->number);
-    print_sub_tree(list->root->left);
   }
   if (list->root->right) {
     printf("Right: %d ", list->root->right->number);
+  }
+  if (list->root->left) {
+    print_sub_tree(list->root->left);
+  }
+  if (list->root->right) {
     print_sub_tree(list->root->right);
   }
   printf("\n");
+}
+
+int count_nodes(tree_node * root) {
+  // Makes sure there is a  node.
+	if (!root) {
+		return 0;
+	}
+	// Finds the end of the list, and returns count.
+  int count = 1;
+  count += count_nodes(root->left);
+  count += count_nodes(root->right);
+	return count;
+}
+
+/*
+// Swap nodes
+tree_node * swap_node(tree_node * root, int left) {
+  // Makes sure there is a list and node to append.
+  tree_node * tmp = root;
+  if (root) {
+    if (left && root->left) {
+      if (root->left->right) {
+        root->left = swap_node(root->right, 0);
+      }
+      tmp = root->left;
+      tmp->parent = root->parent;
+      if(root->parent)
+      {
+        if (root->parent->left == root) {
+          root->parent->left = tmp;
+        }
+        else {
+          root->parent->right = tmp;
+        }
+      }
+      root->parent = tmp;
+      root->left->right = root;
+      root->left = root->left->right;
+      }
+    }
+    else if (!left && root->right) {
+      if (root->right->left) {
+        root->right = swap_node(root->right, 1);
+      }
+      tmp = root->right;
+      tmp->parent = root->parent;
+      if(root->parent)
+      {
+        if (root->parent->right == root) {
+          root->parent->right = tmp;
+        }
+        else {
+          root->parent->right = tmp;
+        }
+      }
+      root->parent = tmp;
+      root->right->left = root;
+      root->right = root->right->left;
+    }
+  return tmp;
+}
+*/
+
+void balance_tree(tree * list) {
+  // Makes sure there is a list and node to append.
+	if (!list || !list->root) {
+		return;
+	}
+	// Checks balance of tree, and swaps if needed.
+  int left = 0;
+  int right = 0;
+  tree_node * old_root = list->root;
+  left = count_nodes(list->root->left);
+  right = count_nodes(list->root->right);
+  while (left < right/3 || right < left/3) {
+    if (left < right/3) {
+      printf("Needs root right swap\n");
+      //list->root = swap_node(list->root, 0);
+    }
+    else {
+      printf("Needs root left swap\n");
+      //list->root = swap_node(list->root, 1);
+    }
+    left = count_nodes(list->root->left);
+    right = count_nodes(list->root->right);
+    break; // Swap doesn't work yet
+  }
 }
 
 int main()
 {
   printf("Creating Tree:\n");
 	tree * list = create_list(create_node(3));
-  print_tree(list);
-	if (!append_node(create_node(1), list)) {
+	if (!append_node(create_node(2), list)) {
 		printf("Append failed.\n");
 	}
-  print_tree(list);
-	if (!append_node(create_node(4), list)) {
+	if (!append_node(create_node(5), list)) {
 		printf("Append failed.\n");
 	}
-  print_tree(list);
-  tree_node * node = create_node(5);
+  tree_node * node = create_node(4);
 	if (!append_node(node, list)) {
 		printf("Append failed.\n");
 	}
-  print_tree(list);
+	if (!append_node(create_node(6), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(7), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(8), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(9), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(10), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(11), list)) {
+		printf("Append failed.\n");
+	}
+  if (!append_node(create_node(12), list)) {
+		printf("Append failed.\n");
+	}
 	if (!append_node(create_node(1), list)) {
 		printf("Append failed.\n");
 	}
@@ -218,7 +326,11 @@ int main()
   else {
     printf("Didn't find node in tree.\n");
   }
-
+  printf("Number of nodes: %d\n", count_nodes(list->root));
+  printf("Number Left: %d\n", count_nodes(list->root->left));
+  printf("Number Right: %d\n", count_nodes(list->root->right));
+  balance_tree(list);
+  print_tree(list);
 	printf("Deleting Tree:\n");
 	if (!empty_list(list)) {
 		printf("Empty List failed.\n");
