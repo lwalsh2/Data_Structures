@@ -172,7 +172,7 @@ void print_sub_tree(tree_node * node) {
 
 // Parses list and prints node data.
 void print_tree(tree * list) {
-	printf("Printing Tree: \n");
+	printf("\nPrinting Tree: \n");
 	if (!list || !list->root) {
 		printf("   No tree, root empty\n");
 		return;
@@ -245,22 +245,30 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
         parent->left = swap_node(node, 0);
       }
       else {
-        parent->left = swap_node(node, 0);
+        parent->right = swap_node(node, 0);
       }
     }
     else {
       if (left_node) {
-        parent->right = swap_node(node, 1);
+        parent->left = swap_node(node, 1);
       }
       else {
         parent->right = swap_node(node, 1);
+
       }
     }
     left = count_level(node->left);
     right = count_level(node->right);
   }
-  balance_sub_tree(node, node->left, 1);
-  balance_sub_tree(node, node->right, 0);
+  if (left_node) {
+    balance_sub_tree(parent->left, parent->left->left, 1);
+    balance_sub_tree(parent->left, parent->left->right, 0);
+  }
+  else {
+    balance_sub_tree(parent->right, parent->right->left, 1);
+    balance_sub_tree(parent->right, parent->right->right, 0);
+  }
+
 }
 
 void balance_tree(tree * list) {
@@ -284,7 +292,7 @@ void balance_tree(tree * list) {
     right = count_level(list->root->right);
   }
   balance_sub_tree(list->root, list->root->left, 1);
-  balance_sub_tree(list->root, list->root->left, 0);
+  balance_sub_tree(list->root, list->root->right, 0);
 }
 
 int main()
