@@ -240,8 +240,6 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
   left = count_level(node->left);
   right = count_level(node->right);
   while (left+1 < right || right+1 < left) {
-    balance_sub_tree(node, node->left, 1);
-    balance_sub_tree(node, node->right, 0);
     if (left+1 < right) {
       node = swap_node(node, 0);
     }
@@ -254,6 +252,8 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
     else {
       parent->right = node;
     }
+    balance_sub_tree(node, node->left, 1);
+    balance_sub_tree(node, node->right, 0);
     left = count_level(node->left);
     right = count_level(node->right);
   }
@@ -270,14 +270,14 @@ void balance_tree(tree * list) {
   left = count_level(list->root->left);
   right = count_level(list->root->right);
   while (left+1 < right || right+1 < left) {
-    balance_sub_tree(list->root, list->root->left, 1);
-    balance_sub_tree(list->root, list->root->right, 0);
     if (left+1 < right) {
       list->root = swap_node(list->root, 0);
     }
     else {
       list->root = swap_node(list->root, 1);
     }
+    balance_sub_tree(list->root, list->root->left, 1);
+    balance_sub_tree(list->root, list->root->right, 0);
     left = count_level(list->root->left);
     right = count_level(list->root->right);
   }
