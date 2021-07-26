@@ -213,6 +213,10 @@ tree_node * swap_node(tree_node * root, int left) {
   // Makes sure there is a list and node to append.
   tree_node * tmp = root;
   if (root && left) {
+    if (root->left->right)
+    {
+      root->left = swap_node(root->left, 0);
+    }
     tmp = root->left;
     tmp->parent = root->parent;
     root->parent = tmp;
@@ -220,6 +224,10 @@ tree_node * swap_node(tree_node * root, int left) {
     tmp->right = root;
   }
   else if (root && !left) {
+    if (root->right->left)
+    {
+      root->right = swap_node(root->right, 1);
+    }
     tmp = root->right;
     tmp->parent = root->parent;
     root->parent = tmp;
@@ -237,6 +245,8 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
 	// Checks balance of tree, and swaps if needed.
   int left = 0;
   int right = 0;
+  balance_sub_tree(node, node->left, 1);
+  balance_sub_tree(node, node->right, 0);
   left = count_level(node->left);
   right = count_level(node->right);
   while (left+1 < right || right+1 < left) {
@@ -252,8 +262,6 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
     else {
       parent->right = node;
     }
-    balance_sub_tree(node, node->left, 1);
-    balance_sub_tree(node, node->right, 0);
     left = count_level(node->left);
     right = count_level(node->right);
   }
@@ -267,6 +275,8 @@ void balance_tree(tree * list) {
 	// Checks balance of tree, and swaps if needed.
   int left = 0;
   int right = 0;
+  balance_sub_tree(list->root, list->root->left, 1);
+  balance_sub_tree(list->root, list->root->right, 0);
   left = count_level(list->root->left);
   right = count_level(list->root->right);
   while (left+1 < right || right+1 < left) {
@@ -276,8 +286,6 @@ void balance_tree(tree * list) {
     else {
       list->root = swap_node(list->root, 1);
     }
-    balance_sub_tree(list->root, list->root->left, 1);
-    balance_sub_tree(list->root, list->root->right, 0);
     left = count_level(list->root->left);
     right = count_level(list->root->right);
   }
