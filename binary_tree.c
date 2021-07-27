@@ -1,6 +1,7 @@
 /*
  * Binary Tree Operations
  * By: Liam P. Walsh
+ * Tree uses AVL method (Balances after append and remove)
 */
 
 #include <stdlib.h>
@@ -39,43 +40,6 @@ tree * create_list(tree_node * root) {
 	tree_struct->root = root;
 
 	return tree_struct;
-}
-
-// Append node to front of list. (Replaces head node)
-int append_node(tree_node * new, tree * list) {
-  // Makes sure there is a list and node to append.
-	if (!list || !new) {
-		return 0;
-	}
-	// If the list is empty, sets the node as root.
-	if (!list->root) {
-		list->root = new;
-	}
-	// Finds the end of the list, and appends to the end.
-	else {
-    tree_node * iter = list->root;
-    int left = 1;
-    while (iter) {
-      if (new->number <= iter->number) {
-				new->parent = iter;
-        iter = iter->left;
-        left = 1;
-      }
-      else {
-				new->parent = iter;
-        iter = iter->right;
-        left = 0;
-      }
-    }
-    iter = new->parent;
-    if (left) {
-      iter->left = new;
-    }
-    else {
-      iter->right = new;
-    }
-	}
-	return 1;
 }
 
 // Recursively frees nodes called by the node pointer.
@@ -210,7 +174,7 @@ int count_level(tree_node * root) {
 
 // Swap nodes
 tree_node * swap_node(tree_node * root, int left) {
-  // Makes sure there is a list and node to append.
+  // Makes sure there is a list and node.
   tree_node * tmp = root;
   if (root && left) {
     if (root->left->right)
@@ -291,6 +255,85 @@ void balance_tree(tree * list) {
   }
 }
 
+// Append node to front of list. (Replaces head node)
+int append_node(tree_node * new, tree * list) {
+  // Makes sure there is a list and node to append.
+	if (!list || !new) {
+		return 0;
+	}
+	// If the list is empty, sets the node as root.
+	if (!list->root) {
+		list->root = new;
+	}
+	// Finds the end of the list, and appends to the end.
+	else {
+    tree_node * iter = list->root;
+    int left = 1;
+    while (iter) {
+      if (new->number <= iter->number) {
+				new->parent = iter;
+        iter = iter->left;
+        left = 1;
+      }
+      else {
+				new->parent = iter;
+        iter = iter->right;
+        left = 0;
+      }
+    }
+    iter = new->parent;
+    if (left) {
+      iter->left = new;
+    }
+    else {
+      iter->right = new;
+    }
+	}
+  balance_tree(list);
+	return 1;
+}
+
+// Remove node (Similar to swap/rotate)
+void remove_node(tree * list, tree_node * root) {
+  // Makes sure there is a list and node.
+  if (!list || !root) {
+    return;
+  }
+  tree_node * tmp = root;
+  if (list->root == root) {
+    if (root->left->right)
+    {
+      root->left = swap_node(root->left, 0);
+    }
+    tmp = root->left;
+    tmp->parent = NULL;
+    list->root = tmp;
+    free(root);
+  }
+  else if (root->parent->right == root) {
+    if (root->left->right)
+    {
+      root->left = swap_node(root->left, 0);
+    }
+    tmp = root->left;
+    tmp->parent = root->parent;
+    tmp->parent->right = tmp;
+    free(root);
+  }
+  else if (root->parent->left == root) {
+    if (root->right->left)
+    {
+      root->right = swap_node(root->right, 1);
+    }
+    tmp = root->right;
+    tmp->parent = root->parent;
+    tmp->parent->left = tmp;
+    free(root);
+  }
+  balance_tree(list);
+}
+
+
 int main()
 {
   printf("Creating Tree:\n");
@@ -337,14 +380,17 @@ int main()
   else {
     printf("Didn't find node in tree.\n");
   }
+  remove_node(list, node);
+  if (!search_tree(list, node)) {
+    printf("Successfully removed node from tree.\n");
+  }
+  else {
+    printf("Didn't remove node from tree.\n");
+  }
   printf("Number of levels: %d\n", count_level(list->root));
   printf("Number Left: %d\n", count_level(list->root->left));
   printf("Number Right: %d\n", count_level(list->root->right));
-  balance_tree(list);
   print_tree(list);
-  printf("Number of levels: %d\n", count_level(list->root));
-  printf("Number Left: %d\n", count_level(list->root->left));
-  printf("Number Right: %d\n", count_level(list->root->right));
 	printf("Deleting Tree:\n");
 	if (!empty_list(list)) {
 		printf("Empty List failed.\n");
