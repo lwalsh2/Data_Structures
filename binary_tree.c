@@ -73,24 +73,24 @@ int empty_list(tree * list) {
 	return 1;
 }
 
-// Parses tree for largest and smallest nodes
-int search_tree(tree * list, tree_node * key) {
+// Finds and returns first instance of a node with given key.
+tree_node * search_tree(tree * list, int key) {
 	if (!list || !list->root) {
-		return 0;
+		return NULL;
 	}
   tree_node * iter = list->root;
   while (iter) {
-    if (iter == key) {
-      return 1;
+    if (iter->number == key) {
+      return iter;
     }
-    if (iter->number > key->number) {
+    if (iter->number > key) {
       iter = iter->left;
     }
     else {
       iter = iter->right;
     }
   }
-  return 0;
+  return NULL;
 }
 
 // Parses tree for largest and smallest nodes
@@ -157,6 +157,7 @@ void print_tree(tree * list) {
   printf("\n");
 }
 
+// Counts the furthest level of child nodes.
 int count_level(tree_node * root) {
   // Makes sure there is a  node.
 	if (!root) {
@@ -172,7 +173,7 @@ int count_level(tree_node * root) {
 }
 
 
-// Swap nodes
+// Swap/Rotate nodes
 tree_node * swap_node(tree_node * root, int left) {
   // Makes sure there is a list and node.
   tree_node * tmp = root;
@@ -201,6 +202,7 @@ tree_node * swap_node(tree_node * root, int left) {
   return tmp;
 }
 
+// Recursively balances nodes by checking the node's left and right levels.
 void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
   // Makes sure there is a list and node to append.
 	if (!node || !parent) {
@@ -231,6 +233,7 @@ void balance_sub_tree(tree_node * parent, tree_node * node, int left_node) {
   }
 }
 
+// Balances tree by calling balance_sub_tree, and swap_node.
 void balance_tree(tree * list) {
   // Makes sure there is a list and node to append.
 	if (!list || !list->root) {
@@ -345,8 +348,7 @@ int main()
 	if (!append_node(create_node(5), list)) {
 		printf("Append failed.\n");
 	}
-  tree_node * node = create_node(4);
-	if (!append_node(node, list)) {
+	if (!append_node(create_node(4), list)) {
 		printf("Append failed.\n");
 	}
 	if (!append_node(create_node(6), list)) {
@@ -375,18 +377,19 @@ int main()
 	}
   print_tree(list);
   print_small_large_tree(list);
-  if (search_tree(list, node)) {
+  tree_node * node = search_tree(list, 4);
+  if (node) {
     printf("Found node in tree.\n");
+    remove_node(list, node);
+    if (!search_tree(list, 4)) {
+      printf("Successfully removed node from tree.\n");
+    }
+    else {
+      printf("Didn't remove node from tree.\n");
+    }
   }
   else {
     printf("Didn't find node in tree.\n");
-  }
-  remove_node(list, node);
-  if (!search_tree(list, node)) {
-    printf("Successfully removed node from tree.\n");
-  }
-  else {
-    printf("Didn't remove node from tree.\n");
   }
   printf("Number of levels: %d\n", count_level(list->root));
   printf("Number Left: %d\n", count_level(list->root->left));
