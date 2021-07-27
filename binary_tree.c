@@ -316,6 +316,7 @@ void remove_node(tree * list, tree_node * root) {
       root->left = swap_node(root->left, 0);
     }
     tmp = root->left;
+    tmp->right = root->right;
     tmp->parent = root->parent;
     tmp->parent->right = tmp;
     free(root);
@@ -326,13 +327,13 @@ void remove_node(tree * list, tree_node * root) {
       root->right = swap_node(root->right, 1);
     }
     tmp = root->right;
+    tmp->left = root->left;
     tmp->parent = root->parent;
     tmp->parent->left = tmp;
     free(root);
   }
   balance_tree(list);
 }
-
 
 int main()
 {
