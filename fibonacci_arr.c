@@ -8,12 +8,12 @@
 
 
 // Array cache
-unsigned int array[100];
+unsigned int array[100] = {0};
 
 unsigned int fibonacci(unsigned int i) {
   // Determine if number is too big for array.
   if (i > 99) {
-    return -1;
+    return 0;
   }
   // Check if the array cached the value.
   if (array[i] > 0) {
