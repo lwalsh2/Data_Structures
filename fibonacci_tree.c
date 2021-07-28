@@ -353,15 +353,13 @@ unsigned int fibonacci(tree *list, unsigned int i) {
   tree_node * fib_node = search_tree(list, i);
   if (fib_node != NULL)
   {
-    if (fib_node->fib > 0)
-    {
-      return fib_node->fib;
-    }
+    // If the node exists, return it's fib value.
     fib_node->fib = fibonacci(list, i-1) + fibonacci(list, i-2);
     return fib_node->fib;
   }
   else
   {
+    // Creates, appends and fills node. Return the new fib value.
     fib_node = create_node(i);
     append_node(fib_node, list);
     fib_node->fib = fibonacci(list, i-1) + fibonacci(list, i-2);
