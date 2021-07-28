@@ -5,14 +5,11 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#define ARRAY_SIZE 45
 
-
-// Array cache
-unsigned int array[100] = {0};
-
-unsigned int fibonacci(unsigned int i) {
+unsigned int fibonacci(unsigned int i, unsigned int array[]) {
   // Determine if number is too big for array.
-  if (i > 99) {
+  if (i > ARRAY_SIZE) {
     return 0;
   }
   // Check if the array cached the value.
@@ -24,17 +21,19 @@ unsigned int fibonacci(unsigned int i) {
     array[i] = 1;
   }
   else {
-    array[i] = fibonacci(i-1) + fibonacci(i-2);
+    array[i] = fibonacci(i-1, array) + fibonacci(i-2, array);
   }
   return array[i];
 }
 
 int main(void)
 {
-  printf("Fib %u: %u\n", 5, fibonacci(5));
-  printf("Fib %u: %u\n", 7, fibonacci(7));
-  printf("Fib %u: %u\n", 5, fibonacci(5));
-  printf("Fib %u: %u\n", 99, fibonacci(99));
-  printf("Fib %u: %u\n", 97, fibonacci(97));
+  // Array cache
+  unsigned int array[ARRAY_SIZE] = {0};
+  printf("Fib %u: %u\n", 5, fibonacci(5, array));
+  printf("Fib %u: %u\n", 7, fibonacci(7, array));
+  printf("Fib %u: %u\n", 5, fibonacci(5, array));
+  printf("Fib %u: %u\n", 43, fibonacci(43, array));
+  printf("Fib %u: %u\n", 40, fibonacci(44, array));
   return 0;
 }
