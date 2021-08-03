@@ -181,13 +181,21 @@ int append_node(heap_node * new, heap * list) {
 	else {
     heap_node * iter = list->root;
     int parent = 0; // 0 - L, 1 - R
+    int cL = 0;
+    int cLL = 0;
+    int cR = 0;
+    int cRL = 0;
     while (iter) {
-      if (count_full_left(iter) <= count_full_right(iter)+1 && count_full_left(iter->left) != count_full_right(iter->left)) {
+      cL = count_full_left(iter);
+      cLL = count_full_left(iter->left);
+      cR = count_full_right(iter);
+      cRL = count_full_right(iter->left);
+      if (cL <= cR+1 && cLL != cRL) {
 				new->parent = iter;
         iter = iter->left;
         parent = 0;
       }
-      else if (count_full_left(iter) <= count_full_right(iter) && count_full_left(iter->left) == count_full_right(iter->left)) {
+      else if (cL <= cR && cLL == cRL) {
 				new->parent = iter;
         iter = iter->left;
         parent = 0;
