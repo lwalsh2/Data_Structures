@@ -129,68 +129,40 @@ int count_level(heap_node * root) {
 	return cR + 1;
 }
 
-// Fix parent
-void fix_parent(heap_node * parent) {
-	if (!parent) {
-		return;
+// Counts the furthest level of child nodes.
+int count_full_left(heap_node * root) {
+  // Makes sure there is a  node.
+	if (!root) {
+		return 0;
 	}
-	if (parent->left) {
-		parent->left->parent = parent;
-    fix_parent(parent->left);
+	// Finds the end of the list, and returns count.
+	return 1 + count_level(root->left);
+}
+
+// Counts the furthest level of child nodes.
+int count_full_right(heap_node * root) {
+  // Makes sure there is a  node.
+	if (!root) {
+		return 0;
 	}
-  if (parent->right) {
-		parent->right->parent = parent;
-    fix_parent(parent->right);
-	}
+	// Finds the end of the list, and returns count.
+  return 1 + count_level(root->right);
 }
 
 // Swaps as needed until max heap is valid.
-void balance_heap(heap_node * node, heap * list) {
+void balance_up_heap(heap_node * node, heap * list) {
   // Makes sure there is a list and node to append.
 	if (!node || !list) {
 		return;
 	}
-  heap_node * tmp;
-  int parent;
+  int tmp_number = 0;
+  // If parent is smaller, swap data of nodes.
   while (node->parent != NULL && node->number > node->parent->number) {
-    // Swap with root
-    parent = (node->parent->left == node)? 0 : 1;
-    if (node->parent == list->root) {
-      list->root = node;
-    }
-    // Grandparent points to us
-    else {
-      if (node->parent->parent->left == node->parent) {
-        node->parent->parent->left = node;
-      }
-      else {
-        node->parent->parent->right = node;
-      }
-    }
-    // Swap current with parent
-    if (parent) { // R
-      node->parent->right = node->right;
-      node->right = node->parent;
-      tmp = node->parent->left;
-      node->parent->left = node->left;
-      node->left = tmp;
-    }
-    else { // L
-      node->parent->left = node->left;
-      node->left = node->parent;
-      tmp = node->parent->right;
-      node->parent->right = node->right;
-      node->right = tmp;
-    }
-    if (tmp) {
-      tmp->parent = node;
-    }
-    tmp = node->parent->parent;
-    node->parent->parent = node;
-    node->parent = tmp;
-    fix_parent(list->root);
+    tmp_number = node->number;
+    node->number = node->parent->number;
+    node->parent->number = tmp_number;
+    node = node->parent;
   }
-
 }
 
 // Append node to front of list. (Replaces head node)
@@ -206,13 +178,14 @@ int append_node(heap_node * new, heap * list) {
 	// Finds the end of the list, and appends to the end.
 	else {
     heap_node * iter = list->root;
-    int cL = 0;
-    int cR = 0;
     int parent = 0; // 0 - L, 1 - R
     while (iter) {
-      cL = count_level(iter->left);
-      cR = count_level(iter->right);
-      if (cL <= cR) {
+      if (count_full_left(iter) <= count_full_right(iter)+1 && count_full_left(iter->left) != count_full_right(iter->left)) {
+				new->parent = iter;
+        iter = iter->left;
+        parent = 0;
+      }
+      else if (count_full_left(iter) <= count_full_right(iter) && count_full_left(iter->left) == count_full_right(iter->left)) {
 				new->parent = iter;
         iter = iter->left;
         parent = 0;
@@ -230,7 +203,7 @@ int append_node(heap_node * new, heap * list) {
     else {
       iter->left = new;
     }
-    balance_heap(new, list);
+    balance_up_heap(new, list);
 	}
 	return 1;
 }
