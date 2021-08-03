@@ -21,6 +21,7 @@ typedef struct heap_node_ {
 typedef struct heap_ {
   // The root node of the heap
   heap_node * root;
+  int size;
 } heap;
 
 // Allocates node with the given data, and returns address.
@@ -115,28 +116,13 @@ void print_heap(heap * list) {
 }
 
 // Counts the furthest level of child nodes.
-int count_level(heap_node * root) {
-  // Makes sure there is a  node.
-	if (!root) {
-		return 0;
-	}
-	// Finds the end of the list, and returns count.
-  int cL = count_level(root->left);
-  int cR = count_level(root->right);
-  if (cL > cR) {
-    return cL + 1;
-  }
-	return cR + 1;
-}
-
-// Counts the furthest level of child nodes.
 int count_full_left(heap_node * root) {
   // Makes sure there is a  node.
 	if (!root) {
 		return 0;
 	}
 	// Finds the end of the list, and returns count.
-	return 1 + count_level(root->left);
+	return 1 + count_full_left(root->left);
 }
 
 // Counts the furthest level of child nodes.
@@ -146,7 +132,7 @@ int count_full_right(heap_node * root) {
 		return 0;
 	}
 	// Finds the end of the list, and returns count.
-  return 1 + count_level(root->right);
+  return 1 + count_full_right(root->right);
 }
 
 // Swaps as needed until max heap is valid.
@@ -171,6 +157,7 @@ int append_node(heap_node * new, heap * list) {
 	if (!list || !new) {
 		return 0;
 	}
+  list->size += 1;
 	// If the list is empty, sets the node as root.
 	if (!list->root) {
 		list->root = new;
@@ -206,6 +193,60 @@ int append_node(heap_node * new, heap * list) {
     balance_up_heap(new, list);
 	}
 	return 1;
+}
+
+// Parses list and fill array.
+int sub_tree_fill(heap_node * node, heap_node ** heap_array, int i) {
+	if (!node) {
+		return 0;
+	}
+  if (node->left) {
+    i = sub_tree_fill(node->left, heap_array, i);
+  }
+  heap_array[i++] = node;
+  if (node->right) {
+    i = sub_tree_fill(node->right, heap_array, i);
+  }
+  return i;
+}
+
+// Search for a node with the given data using DFS.
+heap_node * heap_sub_DFS(heap_node * root, int number) {
+  if (root->number == number) {
+    return root;
+  }
+  heap_node * node = NULL;
+  if(root->left) {
+    node = heap_sub_DFS(root->left, number);
+  }
+  if (!node && root->right) {
+    node = heap_sub_DFS(root->right, number);
+  }
+  return node;
+}
+
+// Search for a node with the given data using DFS.
+heap_node * heap_DFS(heap * list, int number) {
+  if (!list || !list->root) {
+    return NULL;
+  }
+  return heap_sub_DFS(list->root, number);
+}
+
+// Search for a node with the given data using BFS.
+heap_node * heap_BFS(heap * list, int number) {
+  if (!list || !list->root) {
+    return NULL;
+  }
+  // Convert to array to parse
+  heap_node ** heap_array = calloc(list->size, sizeof(heap_node));
+  sub_tree_fill(list->root, heap_array, 0);
+  for (int i = 0; i < list->size; ++i) {
+    if (heap_array[i]->number == number) {
+      return heap_array[i];
+    }
+  }
+  return NULL;
 }
 
 int main()
@@ -246,9 +287,25 @@ int main()
 		printf("Append failed.\n");
 	}
   print_heap(list);
-  printf("Number of levels: %d\n", count_level(list->root));
-  printf("Number Left: %d\n", count_level(list->root->left));
-  printf("Number Right: %d\n", count_level(list->root->right));
+
+  // Search Algorithms
+  if (heap_DFS(list, 8)) {
+		printf("DFS found 8.\n");
+	}
+  else {
+    printf("DFS didn't find 8.\n");
+  }
+  if (heap_BFS(list, 8)) {
+		printf("BFS found 8.\n");
+	}
+  else {
+    printf("BFS didn't find 8.\n");
+  }
+
+  if (!append_node(create_node(1), list)) {
+		printf("Append failed.\n");
+	}
+
 	printf("Deleting heap:\n");
 	if (!empty_list(list)) {
 		printf("Empty List failed.\n");
