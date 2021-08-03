@@ -116,13 +116,28 @@ void print_heap(heap * list) {
 }
 
 // Counts the furthest level of child nodes.
+int count_level(heap_node * root) {
+  // Makes sure there is a  node.
+	if (!root) {
+		return 0;
+	}
+	// Finds the end of the list, and returns count.
+  int cL = count_level(root->left);
+  int cR = count_level(root->right);
+  if (cL > cR) {
+    return cL + 1;
+  }
+	return cR + 1;
+}
+
+// Counts the furthest level of child nodes.
 int count_full_left(heap_node * root) {
   // Makes sure there is a  node.
 	if (!root) {
 		return 0;
 	}
 	// Finds the end of the list, and returns count.
-	return 1 + count_full_left(root->left);
+	return 1 + count_level(root->left);
 }
 
 // Counts the furthest level of child nodes.
@@ -132,7 +147,7 @@ int count_full_right(heap_node * root) {
 		return 0;
 	}
 	// Finds the end of the list, and returns count.
-  return 1 + count_full_right(root->right);
+  return 1 + count_level(root->right);
 }
 
 // Swaps as needed until max heap is valid.
