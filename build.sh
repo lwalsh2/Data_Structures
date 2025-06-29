@@ -1,9 +1,6 @@
 #!/bin/bash
-
-# Clear out the bin folder if present before building new binaries
-rm -r bin
-mkdir -p bin
+rm -rf bin
+mkdir bin
+cmake -B bin -S .
 cd bin
-cmake ..
-make -j$(nproc)
-cd ..
+make
