@@ -6,8 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-#define ARRAY_SIZE 100
+#include "hash_table.h"
 
 // Takes data and return hash.
 int hash_data(int number) {
@@ -53,20 +52,4 @@ void hash_print(int hash_table[])
   {
     printf("No hash to print.\n");
   }
-}
-
-int main() {
-  // Define the hash table, and set values to 0.
-  int hash_table[ARRAY_SIZE] = {0};
-
-  // Add to hash table
-  hash_insert(hash_table, 5);
-  hash_insert(hash_table, 123);
-  hash_insert(hash_table, 28);
-  hash_insert(hash_table, 486);
-
-  // Print hash table
-  hash_print(hash_table);
-
-  return 0;
 }

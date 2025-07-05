@@ -5,35 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-typedef struct tree_node_ tree_node;
-typedef struct tree_node_group_ tree_node_group;
-typedef struct tree_ tree;
-
-// Declares tree node struct.
-struct tree_node_ {
-  // Data of tree node
-  int number;
-  // Pointer to nodes
-  tree_node_group * group;
-};
-
-// Declares tree struct. (hold root)
-struct tree_node_group_ {
-  // The root node of the tree
-  tree_node * left;
-  tree_node * right;
-  tree_node_group * left_child;
-  tree_node_group * middle_child;
-  tree_node_group * right_child;
-  tree_node_group * parent_group;
-};
-
-// Declares tree struct. (hold root)
-struct tree_ {
-  // The root node of the tree
-  tree_node_group * root;
-};
+#include "b_tree.h"
 
 // Allocates node with the given data, and returns address.
 tree_node * create_node(int number) {
@@ -307,16 +279,16 @@ void balance_tree(tree * list) {
 }
 */
 // Append node to front of list. (Replaces head node)
-int append_node(tree_node * new, tree * list) {
+int append_node(tree_node * new_node, tree * list) {
   // Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
 	// If the list is empty, sets the node as root.
 	if (!list->root) {
     list->root = create_node_group();
-		list->root->left = new;
-    new->group = list->root;
+		list->root->left = new_node;
+    new_node->group = list->root;
 	}
 	// Finds the end of the list, and appends to the end.
 	else {
@@ -326,12 +298,12 @@ int append_node(tree_node * new, tree * list) {
     int added = 0;
     while (iter) {
       if (iter->right) {
-        if (iter->right->number < new->number) {
+        if (iter->right->number < new_node->number) {
           pri_iter = iter;
           iter = iter->right_child;
           direction = 1;
         }
-        else if (iter->left->number > new->number) {
+        else if (iter->left->number > new_node->number) {
           pri_iter = iter;
           iter = iter->left_child;
           direction = -1;
@@ -343,15 +315,15 @@ int append_node(tree_node * new, tree * list) {
         }
       }
       else if (iter->left) {
-        if (iter->left->number < new->number) {
-          iter->right = new;
-          new->group = iter;
+        if (iter->left->number < new_node->number) {
+          iter->right = new_node;
+          new_node->group = iter;
           added = 1;
         }
         else {
           iter->right = iter->left;
-          iter->left = new;
-          new->group = iter;
+          iter->left = new_node;
+          new_node->group = iter;
           added = 1;
         }
       }
@@ -370,8 +342,8 @@ int append_node(tree_node * new, tree * list) {
         pri_iter->right_child = iter;
         iter->parent_group = pri_iter;
       }
-      iter->left = new;
-      new->group = iter;
+      iter->left = new_node;
+      new_node->group = iter;
     }
 	}
   // balance_tree(list);
@@ -419,75 +391,3 @@ void remove_node(tree * list, tree_node * root) {
   }
   // balance_tree(list);
 }*/
-
-int main()
-{
-  printf("Creating Tree:\n");
-	tree * list = create_list();
-  if (!append_node(create_node(5), list)) {
-		printf("Append failed.\n");
-	}
-  print_tree(list);
-	if (!append_node(create_node(2), list)) {
-		printf("Append failed.\n");
-	}
-  print_tree(list);
-	if (!append_node(create_node(3), list)) {
-		printf("Append failed.\n");
-	}
-  print_tree(list);
-	if (!append_node(create_node(4), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(6), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(7), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(8), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(9), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(10), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(11), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(12), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(1), list)) {
-		printf("Append failed.\n");
-	}
-  print_tree(list);
-  print_small_large_tree(list);
-  tree_node * node = search_tree(list, 4);
-
-  if (node) {
-    printf("Found node in tree.\n");
-    /*
-    remove_node(list, node);
-    if (!search_tree(list, 4)) {
-      printf("Successfully removed node from tree.\n");
-    }
-    else {
-      printf("Didn't remove node from tree.\n");
-    }*/
-  }
-  else {
-    printf("Didn't find node in tree.\n");
-  }
-  printf("Number of levels: %d\n", count_level(list->root));
-	printf("Deleting Tree:\n");
-	if (!empty_list(list)) {
-		printf("Empty List failed.\n");
-	}
-	print_tree(list);
-  print_small_large_tree(list);
-	free(list);
-  return 0;
-}

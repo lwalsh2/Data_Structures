@@ -6,23 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-// Declares tree node struct.
-typedef struct tree_node_ {
-  // Data of tree node
-  unsigned int number;
-  unsigned int fib;
-  // Pointers to nodes
-  struct tree_node_ * right;
-	struct tree_node_ * left;
-  struct tree_node_ * parent;
-} tree_node;
-
-// Declares tree struct. (hold root)
-typedef struct tree_ {
-  // The root node of the tree
-  tree_node * root;
-} tree;
+#include "fibonacci_tree.h"
 
 // Allocates node with the given data, and returns address.
 tree_node * create_node(int number) {
@@ -365,20 +349,4 @@ unsigned int fibonacci(tree *list, unsigned int i) {
     fib_node->fib = fibonacci(list, i-1) + fibonacci(list, i-2);
     return fib_node->fib;
   }
-}
-
-int main(void)
-{
-  tree * list = create_list();
-  printf("Fib %u: %d\n", 1, fibonacci(list, 1));
-  printf("Fib %u: %d\n", 2, fibonacci(list, 2));
-  printf("Fib %u: %d\n", 5, fibonacci(list, 5));
-  printf("Fib %u: %d\n", 15, fibonacci(list, 15));
-  printf("Fib %u: %d\n", 9, fibonacci(list, 9));
-
-  // Show the cache, and clear it.
-  print_tree(list);
-  empty_list(list);
-  print_tree(list);
-  return 0;
 }

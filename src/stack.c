@@ -5,20 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-// Declares stack node struct.
-typedef struct stack_node_ {
-  // Data of stack node
-  int number;
-  // The last node added to stack
-  struct stack_node_ * prev;
-} stack_node;
-
-// Declares stack struct. (holds last node)
-typedef struct stack_ {
-  // The first node of the list
-  stack_node * top;
-} stack;
+#include "stack.h"
 
 // Allocates node with the given data, and returns address.
 stack_node * create_node(int number) {
@@ -39,19 +26,19 @@ stack * create_stack(stack_node * head) {
 }
 
 // Append node to front of list. (Replaces head node)
-int push_node(stack_node * new, stack * list) {
+int push_node(stack_node * new_node, stack * list) {
 	// Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
 	// If the list is empty, sets the node as head.
 	if (!list->top) {
-		list->top = new;
+		list->top = new_node;
 	}
 	// Replaces the current head of the list.
 	else {
-		new->prev = list->top;
-		list->top = new;
+		new_node->prev = list->top;
+		list->top = new_node;
 	}
 	return 1;
 }
@@ -95,33 +82,4 @@ void peek_node(stack * list) {
 		return;
 	}
 	printf("   Top's int = %d\n", list->top->number);
-}
-
-int main()
-{
-  printf("Creating Stack:\n");
-	stack * list = create_stack(create_node(3));
-  peek_node(list);
-	if (!push_node(create_node(1), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-	if (!push_node(create_node(2), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-	pop_node(list);
-  peek_node(list);
-	if (!push_node(create_node(1), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-
-	printf("Deleting Stack:\n");
-	if (!empty_stack(list)) {
-		printf("Empty Stack failed.\n");
-	}
-	peek_node(list);
-	free(list);
-  return 0;
 }
