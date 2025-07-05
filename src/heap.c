@@ -6,23 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-// Declares heap node struct.
-typedef struct heap_node_ {
-  // Data of heap node
-  int number;
-  // Pointers to nodes
-  struct heap_node_ * right;
-	struct heap_node_ * left;
-  struct heap_node_ * parent;
-} heap_node;
-
-// Declares heap struct. (hold root)
-typedef struct heap_ {
-  // The root node of the heap
-  heap_node * root;
-  int size;
-} heap;
+#include "heap.h"
 
 // Allocates node with the given data, and returns address.
 heap_node * create_node(int number) {
@@ -167,15 +151,15 @@ void balance_up_heap(heap_node * node, heap * list) {
 }
 
 // Append node to front of list. (Replaces head node)
-int append_node(heap_node * new, heap * list) {
+int append_node(heap_node * new_node, heap * list) {
   // Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
   list->size += 1;
 	// If the list is empty, sets the node as root.
 	if (!list->root) {
-		list->root = new;
+		list->root = new_node;
 	}
 	// Finds the end of the list, and appends to the end.
 	else {
@@ -191,29 +175,29 @@ int append_node(heap_node * new, heap * list) {
       cR = count_full_right(iter);
       cRL = count_full_right(iter->left);
       if (cL <= cR+1 && cLL != cRL) {
-				new->parent = iter;
+				new_node->parent = iter;
         iter = iter->left;
         parent = 0;
       }
       else if (cL <= cR && cLL == cRL) {
-				new->parent = iter;
+				new_node->parent = iter;
         iter = iter->left;
         parent = 0;
       }
       else {
-				new->parent = iter;
+				new_node->parent = iter;
         iter = iter->right;
         parent = 1;
       }
     }
-    iter = new->parent;
+    iter = new_node->parent;
     if (parent) {
-      iter->right = new;
+      iter->right = new_node;
     }
     else {
-      iter->left = new;
+      iter->left = new_node;
     }
-    balance_up_heap(new, list);
+    balance_up_heap(new_node, list);
 	}
 	return 1;
 }
@@ -270,70 +254,4 @@ heap_node * heap_BFS(heap * list, int number) {
     }
   }
   return NULL;
-}
-
-int main()
-{
-  printf("Creating Heap:\n");
-	heap * list = create_list();
-	if (!append_node(create_node(2), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(5), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(4), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(6), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(7), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(8), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(9), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(10), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(11), list)) {
-		printf("Append failed.\n");
-	}
-  if (!append_node(create_node(12), list)) {
-		printf("Append failed.\n");
-	}
-	if (!append_node(create_node(1), list)) {
-		printf("Append failed.\n");
-	}
-  print_heap(list);
-
-  // Search Algorithms
-  if (heap_DFS(list, 8)) {
-		printf("DFS found 8.\n");
-	}
-  else {
-    printf("DFS didn't find 8.\n");
-  }
-  if (heap_BFS(list, 8)) {
-		printf("BFS found 8.\n");
-	}
-  else {
-    printf("BFS didn't find 8.\n");
-  }
-
-  if (!append_node(create_node(1), list)) {
-		printf("Append failed.\n");
-	}
-
-	printf("Deleting heap:\n");
-	if (!empty_list(list)) {
-		printf("Empty List failed.\n");
-	}
-	print_heap(list);
-	free(list);
-  return 0;
 }

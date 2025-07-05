@@ -6,7 +6,7 @@ find_package(Threads REQUIRED)
 # Compiles passed struct with corresponding source code
 function(compile_struct struct_type struct_src)
     # Define / Create Executable binary
-    add_executable(${struct_type} ${struct_src})
+    add_library(${struct_type} ${struct_src})
 
     # Add struct compilation flags / links
     target_compile_options(${struct_type} PRIVATE -Wall)
@@ -20,7 +20,7 @@ endfunction()
 compile_struct(b_tree b_tree.c)
 compile_struct(binary_tree binary_tree.c)
 compile_struct(double_linked_list double_linked_list.c)
-compile_struct(fibonacci_array fibonacci_arr.c)
+compile_struct(fibonacci_arr fibonacci_arr.c)
 compile_struct(fibonacci_loop fibonacci_loop.c)
 compile_struct(fibonacci_rec fibonacci_rec.c)
 compile_struct(fibonacci_tree fibonacci_tree.c)

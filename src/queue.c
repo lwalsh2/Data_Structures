@@ -5,21 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-// Declares queue node struct.
-typedef struct queue_node_ {
-  // Data of queue node
-  int number;
-  // The next node added to queue
-  struct queue_node_ * next;
-} queue_node;
-
-// Declares queue struct. (holds last node)
-typedef struct queue_ {
-  // The first and last node of the list
-  queue_node * front;
-  queue_node * back;
-} queue;
+#include "queue.h"
 
 // Allocates node with the given data, and returns address.
 queue_node * create_node(int number) {
@@ -41,20 +27,20 @@ queue * create_queue(queue_node * head) {
 }
 
 // Append node to front of list. (Replaces head node)
-int push_node(queue_node * new, queue * list) {
+int push_node(queue_node * new_node, queue * list) {
 	// Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
 	// If the list is empty, sets the node as head.
 	if (!list->front) {
-    list->front = new;
-		list->back = new;
+    list->front = new_node;
+		list->back = new_node;
 	}
 	// Replaces the current head of the list.
 	else {
-    list->back->next = new;
-		list->back = new;
+    list->back->next = new_node;
+		list->back = new_node;
 	}
 	return 1;
 }
@@ -99,33 +85,4 @@ void peek_node(queue * list) {
 		return;
 	}
 	printf("   front's int = %d\n", list->front->number);
-}
-
-int main()
-{
-  printf("Creating queue:\n");
-	queue * list = create_queue(create_node(3));
-  peek_node(list);
-	if (!push_node(create_node(1), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-	if (!push_node(create_node(2), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-	pull_node(list);
-  peek_node(list);
-	if (!push_node(create_node(1), list)) {
-		printf("Push failed.\n");
-	}
-  peek_node(list);
-
-	printf("Deleting queue:\n");
-	if (!empty_queue(list)) {
-		printf("Empty queue failed.\n");
-	}
-	peek_node(list);
-	free(list);
-  return 0;
 }

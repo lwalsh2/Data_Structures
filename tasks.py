@@ -31,22 +31,22 @@ def build(cmd: context.Context) -> None:
     """
     cmd.run('mkdir bin;cmake -B bin -S .;cd bin;make')
 
-@task(build, help={'structure_type': 'Name of the data structure to use. Use `all` to run each'})
-def run(cmd: context.Context, structure_type: str) -> None:
-    """Builds the project. Can be called with `invoke build <structure_type>`.
-    For example, using `invoke build all` runs each, while
-    `invoke build bubble` only runs bubble sort.
+@task(build, help={'structure_type': 'Name of the data structure to test. Use `all` to run each'})
+def test(cmd: context.Context, structure_type: str) -> None:
+    """Builds the project. Can be called with `invoke test <structure_type>`.
+    For example, using `invoke test all` tests each, while
+    `invoke test bubble` only tests bubble sort.
     Args:
         cmd (context.Context): Context invoke passes to run commands
-        structure_type (str): The data structure to run, or `all`
+        structure_type (str): The data structure to test, or `all`
     Returns:
         None
     """
     structure_lower = structure_type.lower()
     if structure_lower == 'all':
         for sort_method in data_structures:
-            cmd.run(f"./bin/src/{sort_method}")
+            cmd.run(f"./bin/tests/{sort_method}_test")
     elif structure_lower in data_structures:
-        cmd.run(f"./bin/src/{structure_lower}")
+        cmd.run(f"./bin/tests/{structure_lower}_test")
     else:
         print(f"Sort Type '{structure_type}' is not implemented")

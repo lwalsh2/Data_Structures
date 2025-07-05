@@ -6,22 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-// Declares linked node struct.
-typedef struct linked_node_ {
-  // Data of linked list node
-  int number;
-  // The next node
-  struct linked_node_ * prev;
-	struct linked_node_ * next;
-} linked_node;
-
-// Declares linked list struct. (hold first node)
-typedef struct linked_list_ {
-  // The first node of the list
-  linked_node * head;
-	linked_node * tail;
-} linked_list;
+#include "double_linked_list.h"
 
 // Allocates node with the given data, and returns address.
 linked_node * create_node(int number) {
@@ -46,47 +31,47 @@ linked_list * create_list(linked_node * head) {
 }
 
 // Append node to front of list. (Replaces head node)
-int append_front_node(linked_node * new, linked_list * list) {
+int append_front_node(linked_node * new_node, linked_list * list) {
 	// Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
 	// If the list is empty, sets the node as head.
 	if (!list->head) {
-		list->head = new;
-		list->tail = new;
-		new->prev = list->head;
-		new->next = list->head;
+		list->head = new_node;
+		list->tail = new_node;
+		new_node->prev = list->head;
+		new_node->next = list->head;
 	}
 	// Replaces the current head of the list.
 	else {
-		list->head->prev = new;
-		new->next = list->head;
-		list->head = new;
-		list->tail->next = new;
+		list->head->prev = new_node;
+		new_node->next = list->head;
+		list->head = new_node;
+		list->tail->next = new_node;
 	}
 	return 1;
 }
 
 // Append node to end of list. (Parses for tail)
-int append_back_node(linked_node * new, linked_list * list) {
+int append_back_node(linked_node * new_node, linked_list * list) {
 	// Makes sure there is a list and node to append.
-	if (!list || !new) {
+	if (!list || !new_node) {
 		return 0;
 	}
 	// If the list is empty, sets the node as head.
 	if (!list->head) {
-		list->head = new;
-		list->tail = new;
-		new->prev = list->head;
-		new->next = list->head;
+		list->head = new_node;
+		list->tail = new_node;
+		new_node->prev = list->head;
+		new_node->next = list->head;
 	}
 	// Finds the end of the list, and appends to the end.
 	else {
-		list->tail->next = new;
-		new->next = list->head;
-		list->tail = new;
-		list->head->prev = new;
+		list->tail->next = new_node;
+		new_node->next = list->head;
+		list->tail = new_node;
+		list->head->prev = new_node;
 	}
 	return 1;
 }
@@ -129,35 +114,4 @@ void print_list(linked_list * list) {
 		printf("   Current Node's int = %d\n", node->number);
 		node = node->next;
 	}
-}
-
-int main()
-{
-  printf("Creating Linked list:\n");
-	linked_list * list = create_list(create_node(3));
-  print_list(list);
-	if (!append_back_node(create_node(1), list)) {
-		printf("Append Back failed.\n");
-	}
-  print_list(list);
-	if (!append_back_node(create_node(2), list)) {
-		printf("Append Back failed.\n");
-	}
-  print_list(list);
-	if (!append_back_node(create_node(3), list)) {
-		printf("Append Back failed.\n");
-	}
-  print_list(list);
-	if (!append_front_node(create_node(1), list)) {
-		printf("Append Front failed.\n");
-	}
-  print_list(list);
-
-	printf("Deleting Linked list:\n");
-	if (!empty_list(list)) {
-		printf("Empty List failed.\n");
-	}
-	print_list(list);
-	free(list);
-  return 0;
 }
