@@ -6,9 +6,12 @@ from invoke import task, context
 
 # The Data Structures that can be called:
 data_structures = ['b_tree', 'binary_tree', 'double_linked_list',
-                   'fibonacci_array', 'fibonacci_loop', 'fibonacci_rec',
+                   'fibonacci_arr', 'fibonacci_loop', 'fibonacci_rec',
                    'fibonacci_tree', 'hash_table', 'heap', 'queue',
                    'single_linked_list', 'stack']
+library_loc = 'build/src/'
+test_loc = 'build/tests/'
+
 
 @task()
 def clean(cmd: context.Context) -> None:
@@ -18,7 +21,7 @@ def clean(cmd: context.Context) -> None:
     Returns:
         None
     """
-    cmd.run('rm -rf bin')
+    cmd.run('rm -rf bin build')
 
 
 @task(clean)
@@ -29,7 +32,11 @@ def build(cmd: context.Context) -> None:
     Returns:
         None
     """
-    cmd.run('mkdir bin;cmake -B bin -S .;cd bin;make')
+    # Build the libraries and test binaries
+    cmd.run('mkdir bin build;cmake -B build -S .;cd build;make')
+    # Move the test binaries to the project directory
+    for sort_method in data_structures:
+        cmd.run(f"cp {test_loc}{sort_method}_test bin/")
 
 @task(build, help={'structure_type': 'Name of the data structure to test. Use `all` to run each'})
 def test(cmd: context.Context, structure_type: str) -> None:
