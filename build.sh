@@ -1,6 +1,6 @@
 #!/bin/bash
-rm -rf bin
-mkdir bin
-cmake -B bin -S .
-cd bin
+rm -rf build
+mkdir build
+cmake -B build -S .
+cd build
 make
